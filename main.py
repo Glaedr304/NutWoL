@@ -1,4 +1,4 @@
-import PyNUTClient, os, time, logging
+import PyNUTClient, sys, os, time, logging
 from wakeonlan import send_magic_packet
 
 logName = 'myapp.log'
@@ -8,8 +8,14 @@ logger = logging.getLogger(__name__)
 host = os.getenv("UPS_IP", "127.0.0.1")
 logger.debug('host is %s', host)
 
-sleepers = os.getenv("SLEEPER_LIST", "a0:36:9f:50:a1:e1").split(",")
-logger.debug('Mac Addresses to wake: %s', sleepers)
+sleepers = os.getenv("SLEEPER_LIST", "a0:36:9f:50:a1:e1")
+
+if sleepers is not None:
+    sleepers = sleepers.split(",")
+    logger.debug('Mac Addresses to wake: %s', sleepers)
+else:
+    logger.error('No Mac Addresses were provided, no one to wake up!')
+    sys.exit(1)
 
 batteryThreshold = int(os.getenv("BATT_THRESHOLD", "30"))
 logger.debug('Battery Threshold %s', batteryThreshold)
@@ -28,11 +34,11 @@ logging.basicConfig(
     datefmt = '%Y-%m-%d %H:%M:%S'
     )
 
-client = PyNUTClient.PyNUT.PyNUTClient(host = host)
-myList = client.GetUPSNames()
-
 def main():
     with open(logName, "r+") as history:
+
+        client = PyNUTClient.PyNUT.PyNUTClient(host = host)
+        myList = client.GetUPSNames()
 
         oldBatteryPercentage = history.readline()
         logger.debug('Previous Battery Percentage %s', oldBatteryPercentage)
@@ -48,13 +54,19 @@ def main():
 
     if oldBatteryPercentage < batteryPercentage and batteryPercentage >= batteryThreshold:
         try:
-            send_magic_packet(sleepers) # TODO this wont work if sleepers is a list
+            for sleeper in sleepers:
+                send_magic_packet(sleeper)
         except Exception as e:
             logger.error('An Error Occured when sending the magic packet. Error: %s', e)    
         else:
             logger.debug('The magic packet was sent without error.')
 
 while __name__ == "__main__":
-    main()
-    logger.debug('Sleeping for %s seconds', sleepDelay) 
-    time.sleep(sleepDelay)
+    try:
+        main()
+    except Exception as e:
+        logger.debug('Oh no! Something went wrong, here are the reciepts: %s', e)
+        sys.exit(1)
+    else:
+        logger.debug('Sleeping for %s seconds', sleepDelay)
+        time.sleep(sleepDelay)
