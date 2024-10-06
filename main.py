@@ -7,11 +7,7 @@ logger = logging.getLogger(__name__)
 
 logLevel = eval('logging.' + os.getenv("LOGGING_LEVEL", "INFO").upper())
 
-logging.basicConfig( 
-    format = '%(asctime)s %(levelname)-8s %(message)s', 
-    level = logLevel, 
-    datefmt = '%Y-%m-%d %H:%M:%S'
-    )
+logging.basicConfig(level = logLevel)
 logger.info('Log level is %s', logLevel)
 
 host = os.getenv("UPS_IP", "127.0.0.1")
@@ -56,7 +52,7 @@ def main():
             for sleeper in sleepers:
                 send_magic_packet(sleeper)
         except Exception as e:
-            logger.error('An Error Occured when sending the magic packet. Error: %s', e)    
+            logger.error('An Error Occured when sending the magic packet. Error: %s', e)
         else:
             logger.debug('The magic packet was sent without error.')
 
