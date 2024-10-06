@@ -47,7 +47,7 @@ def main():
             logger.debug('This UPS (%s) has a batttery percentage of %s', thisUPSName, batteryPercentage)
 
         history.seek(0)
-        history.write(batteryPercentage)
+        history.write(str(batteryPercentage))
         history.truncate()
 
     if oldBatteryPercentage <= batteryPercentage and batteryPercentage >= batteryThreshold:
