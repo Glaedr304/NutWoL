@@ -15,22 +15,22 @@ logging.basicConfig(
 logger.info('Log level is %s', logLevel)
 
 host = os.getenv("UPS_IP", "127.0.0.1")
-logger.debug('host is %s', host)
+logger.info('The UPS host is %s', host)
 
 sleepers = os.getenv("SLEEPER_LIST")
 
 if sleepers is not None:
     sleepers = sleepers.split(",")
-    logger.debug('Mac Addresses to wake: %s', sleepers)
+    logger.info('Mac Addresses to wake: %s', sleepers)
 else:
     logger.error('No Mac Addresses were provided, no one to wake up!')
     sys.exit(1)
 
 batteryThreshold = int(os.getenv("BATT_THRESHOLD", "30"))
-logger.debug('Battery Threshold %s', batteryThreshold)
+logger.info('Battery Threshold: %s', batteryThreshold)
 
 sleepDelay = int(os.getenv("DELAY", "120"))
-logger.debug('Sleep delay: %s', sleepDelay)
+logger.info('Sleep delay: %s', sleepDelay)
 
 def main():
     with open(logName, "r+") as history:
@@ -60,11 +60,13 @@ def main():
         else:
             logger.debug('The magic packet was sent without error.')
 
+logger.info('Entering the main loop.')
+
 while __name__ == "__main__":
     try:
         main()
     except Exception as e:
-        logger.debug('Oh no! Something went wrong, here are the reciepts: %s', e)
+        logger.error('Oh no! Something went wrong, here are the reciepts: %s', e)
         sys.exit(1)
     else:
         logger.debug('Sleeping for %s seconds', sleepDelay)
