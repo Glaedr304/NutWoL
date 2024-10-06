@@ -1,7 +1,7 @@
 import PyNUTClient, sys, os, time, logging
 from wakeonlan import send_magic_packet
 
-logName = 'myapp.log'
+logName = '/usr/src/app/data/myapp.log'
 
 logger = logging.getLogger(__name__)
 
@@ -38,19 +38,19 @@ def main():
         client = PyNUTClient.PyNUT.PyNUTClient(host = host)
         myList = client.GetUPSNames()
 
-        oldBatteryPercentage = history.readline()
+        oldBatteryPercentage = int(history.readline())
         logger.debug('Previous Battery Percentage %s', oldBatteryPercentage)
 
         for thisUPSName in myList:
             vars = client.GetUPSVars(ups = thisUPSName)
-            batteryPercentage = vars[b'battery.charge'].decode('utf-8')
+            batteryPercentage = int(vars[b'battery.charge'].decode('utf-8'))
             logger.debug('This UPS (%s) has a batttery percentage of %s', thisUPSName, batteryPercentage)
 
         history.seek(0)
         history.write(batteryPercentage)
         history.truncate()
 
-    if oldBatteryPercentage < batteryPercentage and batteryPercentage >= batteryThreshold:
+    if oldBatteryPercentage <= batteryPercentage and batteryPercentage >= batteryThreshold:
         try:
             for sleeper in sleepers:
                 send_magic_packet(sleeper)
