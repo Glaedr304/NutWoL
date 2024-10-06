@@ -34,8 +34,11 @@ def main():
         client = PyNUTClient.PyNUT.PyNUTClient(host = host)
         myList = client.GetUPSNames()
 
-        oldBatteryPercentage = int(history.readline())
-        print(oldBatteryPercentage)
+        oldBatteryPercentage = history.readline()
+        if oldBatteryPercentage == '':
+            oldBatteryPercentage = batteryThreshold
+        else:
+            oldBatteryPercentage = int(oldBatteryPercentage)
         logger.debug('Previous Battery Percentage %s', oldBatteryPercentage)
 
         for thisUPSName in myList:
