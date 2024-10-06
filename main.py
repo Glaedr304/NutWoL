@@ -51,7 +51,7 @@ def main():
         history.write(str(batteryPercentage))
         history.truncate()
 
-    if oldBatteryPercentage <= batteryPercentage and batteryPercentage >= batteryThreshold:
+    if oldBatteryPercentage <= batteryPercentage and batteryPercentage >= batteryThreshold and oldBatteryPercentage <= batteryThreshold:
         try:
             for sleeper in sleepers:
                 send_magic_packet(sleeper)
