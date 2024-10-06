@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 host = os.getenv("UPS_IP", "127.0.0.1")
 logger.debug('host is %s', host)
 
-sleepers = os.getenv("SLEEPER_LIST", "a0:36:9f:50:a1:e1")
+sleepers = os.getenv("SLEEPER_LIST")
 
 if sleepers is not None:
     sleepers = sleepers.split(",")
@@ -23,10 +23,8 @@ logger.debug('Battery Threshold %s', batteryThreshold)
 sleepDelay = int(os.getenv("DELAY", "120"))
 logger.debug('Sleep delay: %s', sleepDelay)
 
-logLevel = eval('logging.' + os.getenv("LOGGING_LEVEL", "DEBUG").upper())
+logLevel = eval('logging.' + os.getenv("LOGGING_LEVEL", "INFO").upper())
 logger.info('Log level is %s', logLevel)
-
-host = "nightblood" # TODO Remove this line.
 
 logging.basicConfig( 
     format = '%(asctime)s %(levelname)-8s %(message)s', 
