@@ -1,0 +1,14 @@
+services:
+  wakeservices:
+    build:
+      context: .
+    environment:
+#      - TZ=America/Chicago
+      - LOGGING_LEVEL=INFO
+      - SLEEPER_LIST=a0:36:9f:50:a1:e1,90:09:d0:0f:c5:d7
+      - UPS_IP=192.168.16.123
+    volumes:
+      - ./log:/usr/src/app/log  # Maps the 'log' folder on your host to '/usr/s>
+#      - /etc/timezone:/etc/timezone:ro
+#      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped

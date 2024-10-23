@@ -1,12 +1,12 @@
 import PyNUTClient, sys, os, time, logging
 from wakeonlan import send_magic_packet
 
+#region Environment Setup 
 logName = '/usr/src/app/data/myapp.log'
 
 logger = logging.getLogger(__name__)
 
 logLevel = eval('logging.' + os.getenv("LOGGING_LEVEL", "INFO").upper())
-
 logging.basicConfig(level = logLevel)
 logger.info('Log level is %s', logLevel)
 
@@ -27,6 +27,7 @@ logger.info('Battery Threshold: %s', batteryThreshold)
 
 sleepDelay = int(os.getenv("DELAY", "120"))
 logger.info('Sleep delay: %s', sleepDelay)
+#endregion
 
 def main():
     with open(logName, "r+") as history:
